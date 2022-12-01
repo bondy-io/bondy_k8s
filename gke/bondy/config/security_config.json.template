@@ -12,7 +12,7 @@
             {
                 "username": "urn:demo:user:admin",
                 "authorized_keys": [
-                    "${ADMIN_USER_BONDY_PUBKEY}"
+                    "669D0A9934B46DDDA57B7C6C66805E5D7BD13EE71340D54BB5AC394ACC7603E5"
                 ],
                 "groups": ["urn:demo:group:admin"]
             }
@@ -95,26 +95,26 @@
             {
                 "usernames": "all",
                 "authmethod": "wampcra",
-                "cidr": "10.75.128.0/17",
-                "meta": {"description": "Allows access to the cluster pods."}
+                "cidr": "0.0.0.0/0",
+                "meta": {"description": "Allows access from ay source."}
             },
             {
                 "usernames": "all",
                 "authmethod": "cryptosign",
-                "cidr": "10.75.128.0/17",
-                "meta": {"description": "Allows access to the cluster pods."}
+                "cidr": "0.0.0.0/0",
+                "meta": {"description": "Allows access from ay source."}
             },
             {
                 "usernames": "all",
                 "authmethod": "trust",
-                "cidr": "10.75.128.0/17",
-                "meta": {"description": "Allows access to the cluster pods."}
+                "cidr": "0.0.0.0/0",
+                "meta": {"description": "Allows access from ay source."}
             },
             {
                 "usernames": ["anonymous"],
                 "authmethod": "anonymous",
-                "cidr": "10.75.128.0/17",
-                "meta": {"description": "Allows access to the cluster pods."}
+                "cidr": "0.0.0.0/0",
+                "meta": {"description": "Allows access from ay source."}
             }
         ]
     }
