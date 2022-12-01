@@ -12,12 +12,11 @@ The repo uses [Kustomize](https://kustomize.io), a tool that introduces a templa
 .
 ├── Makefile
 ├── README.md
+├── aws-eks
+│   └── kustomization.yaml
 ├── bases
-│    ├── bondy
-│    └── kustomization.yaml
-└── aws-eks
-    ├── bondy
-    └── kustomization.yaml
+│   ├── bondy
+│   └── kustomization.yaml
 └── gke
     ├── bondy
     └── kustomization.yaml
