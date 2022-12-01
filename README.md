@@ -15,6 +15,9 @@ The repo uses [Kustomize](https://kustomize.io), a tool that introduces a templa
 ├── bases
 │    ├── bondy
 │    └── kustomization.yaml
+└── aws-eks
+    ├── bondy
+    └── kustomization.yaml
 └── gke
     ├── bondy
     └── kustomization.yaml
