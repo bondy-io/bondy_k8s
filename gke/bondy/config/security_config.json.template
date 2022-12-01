@@ -1,0 +1,121 @@
+[
+    {
+        "uri": "com.leapsight.bondy",
+        "security_enabled": true,
+        "authmethods": [
+            "cryptosign",
+            "wampcra",
+            "trust",
+            "anonymous"
+        ],
+        "users": [
+            {
+                "username": "urn:demo:user:admin",
+                "authorized_keys": [
+                    "${ADMIN_USER_BONDY_PUBKEY}"
+                ],
+                "groups": ["urn:demo:group:admin"]
+            }
+        ],
+        "groups": [
+            {
+                "name": "urn:demo:group:admin",
+                "groups": [],
+                "meta": {"description": "The administrators of the Platform."}
+            },
+            {
+                "name": "urn:demo:group:service",
+                "groups": []
+            },
+            {
+                "name": "urn:demo:group:service:a",
+                "groups": ["urn:demo:group:service"]
+            },
+            {
+                "name": "urn:demo:group:service:b",
+                "groups": ["urn:demo:group:service"]
+            }
+        ],
+        "grants": [
+            {
+                "permissions": [
+                    "wamp.call",
+                    "wamp.cancel",
+                    "wamp.subscribe",
+                    "wamp.unsubscribe"
+                ],
+                "resources": [
+                    {
+                        "uri": "bondy.",
+                        "match": "prefix"
+                    },
+                    {
+                        "uri": "wamp.",
+                        "match": "prefix"
+                    }
+                ],
+                "roles": [
+                    "urn:demo:group:admin"
+                ]
+            },
+            {
+                "permissions": [
+                    "wamp.call",
+                    "wamp.cancel",
+                    "wamp.subscribe",
+                    "wamp.unsubscribe"
+                ],
+                "resources": [
+                    {
+                        "uri": "bondy.",
+                        "match": "prefix"
+                    }
+                ],
+                "roles": [
+                    "urn:demo:group:service"
+                ]
+            },
+            {
+                "permissions": [
+                    "wamp.call",
+                    "wamp.cancel"
+                ],
+                "resources": [
+                    {
+                        "uri": "bondy.",
+                        "match": "prefix"
+                    }
+                ],
+                "roles": [
+                    "anonymous"
+                ]
+            }
+        ],
+        "sources": [
+            {
+                "usernames": "all",
+                "authmethod": "wampcra",
+                "cidr": "10.75.128.0/17",
+                "meta": {"description": "Allows access to the cluster pods."}
+            },
+            {
+                "usernames": "all",
+                "authmethod": "cryptosign",
+                "cidr": "10.75.128.0/17",
+                "meta": {"description": "Allows access to the cluster pods."}
+            },
+            {
+                "usernames": "all",
+                "authmethod": "trust",
+                "cidr": "10.75.128.0/17",
+                "meta": {"description": "Allows access to the cluster pods."}
+            },
+            {
+                "usernames": ["anonymous"],
+                "authmethod": "anonymous",
+                "cidr": "10.75.128.0/17",
+                "meta": {"description": "Allows access to the cluster pods."}
+            }
+        ]
+    }
+]

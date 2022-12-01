@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bondy
+  labels:
+    app: bondy
+    tier: application-router
+    fluentd: erlang
+    app.kubernetes.io/name: bondy
+    app.kubernetes.io/component: application-router
+spec:
+  selector:
+    matchLabels:
+      app: bondy
+  serviceName: bondy
+  replicas: 3
+  revisionHistoryLimit: 1
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: bondy
+        tier: application-router
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "18081"
+    spec:
+      terminationGracePeriodSeconds: 300
+      # initContainers: null
+      nodeSelector:
+        node-role: "bondy-worker"
+      containers:
+      - name: bondy
+        image: bondy-image
+        imagePullPolicy: Always
+        env:
+          - name: BONDY_K8S_CLUSTER_NAME
+            value: 'cluster'
+          - name: BONDY_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: BONDY_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: RELX_REPLACE_OS_VARS
+            value: 'true'
+          - name: BONDY_PEER_SERVICE_NAME
+            value: 'bondy.$(BONDY_K8S_NAMESPACE).svc.$(BONDY_K8S_CLUSTER_NAME).local'
+          - name: BONDY_ERL_NODENAME
+            value: 'bondy@$(BONDY_K8S_POD_NAME).bondy.$(BONDY_K8S_NAMESPACE).svc.$(BONDY_K8S_CLUSTER_NAME).local'
+          - name: BONDY_ERL_DISTRIBUTED_COOKIE
+            value: "bondy"
+          - name: BONDY_ERL_SCHEDULERS
+            valueFrom:
+              resourceFieldRef:
+                containerName: bondy
+                resource: limits.cpu
+                divisor: 1
+          - name: BONDY_ERL_CRASH_DUMP
+            value: "/bondy/log"
+          - name: BONDY_LOG_LEVEL
+            value: "info"
+        ports:
+          - name: http
+            containerPort: 18080
+            protocol: TCP
+          - name: https
+            containerPort: 18083
+            protocol: TCP
+          - name: admin-http
+            containerPort: 18081
+            protocol: TCP
+          - name: admin-https
+            containerPort: 18084
+            protocol: TCP
+          - name: wamp-tcp
+            containerPort: 18082
+            protocol: TCP
+          - name: wamp-tls
+            containerPort: 18085
+            protocol: TCP
+          - name: bridge-tls
+            containerPort: 18093
+            protocol: TCP
+          - name: peer-tcp
+            containerPort: 18086
+            protocol: TCP
+          - name: peer-tls
+            containerPort: 18087
+            protocol: TCP
+        volumeMounts:
+          - name: bondy-conf-volume
+            mountPath: /bondy/etc/bondy.conf.template
+            subPath: bondy.conf.template
+          - name: bondy-conf-volume
+            mountPath: /bondy/etc/security_config.json.template
+            subPath: security_config.json.template
+          - name: bondy-data-volume
+            mountPath: /bondy/data
+          - name: bondy-tmp-volume
+            mountPath: /bondy/tmp
+          - name: bondy-log-volume
+            mountPath: /bondy/log
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 18081
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 5
+        # startupProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 18081
+        #     scheme: HTTP
+        #   initialDelaySeconds: 90
+        #   periodSeconds: 10
+        #   timeoutSeconds: 2
+        #   failureThreshold: 15
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 18081
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 15
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      volumes:
+        - name: bondy-conf-volume
+          configMap:
+            name: bondy-config
+        - name: bondy-tmp-volume
+          emptyDir: {}
+        - name: bondy-log-volume
+          emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: bondy-data-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce

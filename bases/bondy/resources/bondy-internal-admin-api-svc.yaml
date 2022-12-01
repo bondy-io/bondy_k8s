@@ -1,0 +1,18 @@
+# Internal Service.
+# Exposes the Service on a cluster-internal IP.
+# Service is only reachable from within the cluster.
+apiVersion: v1
+kind: Service
+metadata:
+  name: bondy-admin-api
+spec:
+  type: ClusterIP
+  selector:
+    app: bondy
+  ports:
+    - name: admin-http
+      port: 8081
+      targetPort: admin-http
+    - name: admin-https
+      port: 8083
+      targetPort: admin-https

@@ -1,0 +1,50 @@
+# Headless service required by k8s statefulset and used to
+# expose TCP/TLS endpoints use by Bondy nodes (peers) to form a cluster.
+# For headless Services, a cluster IP is not allocated, kube-proxy does not
+# handle these Services, and there is no load balancing or proxying done by the
+# platform for them.
+# As usual, bondy.default.svc.cluster.local will be created, but unlike with a
+# standard service, doing a DNS lookup on this hostname provides all the
+# addresses in the StatefulSet.
+# In addition, entries are created for bondy-{N}⁠.bondy⁠.default⁠.svc⁠.cluster​.
+# local for  N in 0..NumberOfReplicas.
+# Each of these resolves to the specific IP address of the replica index in the
+# StatefulSet (Source: Kubernetes Up and Running by Hightower, Kelsey; Burns,
+# Brendan; Beda, Joe)
+apiVersion: v1
+kind: Service
+metadata:
+  name: bondy
+spec:
+  clusterIP: None
+  selector:
+    app: bondy
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
+    - name: wamp-tcp
+      port: 9072
+      targetPort: wamp-tcp
+    - name: wamp-tls
+      port: 9073
+      targetPort: wamp-tls
+    - name: admin-http
+      port: 18081
+      targetPort: admin-http
+    - name: admin-https
+      port: 18084
+      targetPort: admin-https
+    - name: peer-tcp
+      port: 18086
+      targetPort: peer-tcp
+    - name: peer-tls
+      port: 18087
+      targetPort: peer-tls
+    - name: bridge-tls
+      port: 18093
+      targetPort: bridge-tls
+

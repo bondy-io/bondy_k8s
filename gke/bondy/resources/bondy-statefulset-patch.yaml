@@ -1,0 +1,176 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bondy
+spec:
+  selector:
+    matchLabels:
+      app: bondy
+  serviceName: bondy
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: bondy
+    spec:
+      containers:
+      - name: bondy
+        env:
+          - name: BONDY_ETC_DIR
+            value: "/bondy/etc"
+          - name: WAMP_SYSTEM_REALM
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_SYSTEM_REALM
+                name: wamp-configmap
+          - name: WAMP_SYSTEM_ADMIN_REALM
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_SYSTEM_ADMIN_REALM
+                name: wamp-configmap
+          - name: WAMP_SSO_REALM
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_SSO_REALM
+                name: wamp-configmap
+          - name: WAMP_HOME_PROTOTYPE_REALM
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_HOME_PROTOTYPE_REALM
+                name: wamp-configmap
+          - name: WAMP_CORPORATE_PROTOTYPE_REALM
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_CORPORATE_PROTOTYPE_REALM
+                name: wamp-configmap
+          - name: ADMIN_USER_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: ADMIN_USER_BONDY_PUBKEY
+                name: bondy-secret
+          - name: ACCOUNT_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: ACCOUNT_BONDY_PUBKEY
+                name: bondy-secret
+          - name: ALARM_APP_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: ALARM_APP_BONDY_PUBKEY
+                name: bondy-secret
+          - name: CORE_SERVICES_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: CORE_SERVICES_BONDY_PUBKEY
+                name: bondy-secret
+          - name: DEVICE_REGISTRY_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: DEVICE_REGISTRY_BONDY_PUBKEY
+                name: bondy-secret
+          - name: DEVICE_REGISTRAR_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: DEVICE_REGISTRAR_BONDY_PUBKEY
+                name: bondy-secret
+          - name: WEB_APP_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: WEB_APP_BONDY_PUBKEY
+                name: bondy-secret
+          - name: NOTIFICATION_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: NOTIFICATION_BONDY_PUBKEY
+                name: bondy-secret
+          - name: FLOWSHARE_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: FLOWSHARE_BONDY_PUBKEY
+                name: bondy-secret
+          - name: WEB_APP_BONDY_PUBKEY
+            valueFrom:
+              secretKeyRef:
+                key: WEB_APP_BONDY_PUBKEY
+                name: bondy-secret
+          # Notifications (broker bridges config)
+          - name: WAMP_SYSTEM_NOTIFICATION_SMS_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_SYSTEM_NOTIFICATION_SMS_TOPIC
+                name: wamp-configmap
+          - name: WAMP_SYSTEM_NOTIFICATION_EMAIL_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_SYSTEM_NOTIFICATION_EMAIL_TOPIC
+                name: wamp-configmap
+          - name: WAMP_SYSTEM_ADMIN_NOTIFICATION_SMS_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_SYSTEM_ADMIN_NOTIFICATION_SMS_TOPIC
+                name: wamp-configmap
+          - name: WAMP_SYSTEM_ADMIN_NOTIFICATION_EMAIL_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                key: WAMP_SYSTEM_ADMIN_NOTIFICATION_EMAIL_TOPIC
+                name: wamp-configmap
+          ## Amazon SNS
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY_ID
+                name: bondy-secret
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_ACCESS_KEY
+                name: bondy-secret
+          - name: AWS_REGION
+            valueFrom:
+              configMapKeyRef:
+                key: AWS_REGION
+                name: wamp-configmap
+          - name: AWS_SNS_HOST
+            valueFrom:
+              configMapKeyRef:
+                key: AWS_SNS_HOST
+                name: wamp-configmap
+          ## Twilio Sendgrid
+          - name: SENDGRID_APIKEY
+            valueFrom:
+              secretKeyRef:
+                key: SENDGRID_APIKEY
+                name: bondy-secret
+          - name: SENDGRID_SENDER
+            valueFrom:
+              configMapKeyRef:
+                key: SENDGRID_SENDER
+                name: wamp-configmap
+        volumeMounts:
+          - name: bondy-ssl-volume
+            readOnly: true
+            mountPath: /bondy/etc/ssl
+          - name: bondy-conf-volume
+            mountPath: /bondy/etc/broker_bridge_config.json.template
+            subPath: broker_bridge_config.json.template
+        resources:
+         limits:
+           memory: 2Gi
+           cpu: "2"
+         requests:
+           memory: 1Gi
+           cpu: "1"
+      volumes:
+        - name: bondy-ssl-volume
+          secret:
+            secretName: rsa-cert-2048-bondy
+  volumeClaimTemplates:
+  - metadata:
+      name: bondy-data-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: bondy-sc
+      resources:
+        requests:
+          storage: 25Gi

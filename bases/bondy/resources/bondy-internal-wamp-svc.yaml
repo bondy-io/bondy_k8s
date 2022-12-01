@@ -1,0 +1,29 @@
+# Internal service exposing WAMP endpoints:
+# HTTP/WS and WAMP RAWSOCKET TCP endpoints.
+# Exposes the Service on a cluster-internal IP.
+# Service is only reachable from within the cluster.
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-wamp
+spec:
+  type: ClusterIP
+  selector:
+    app: bondy
+  ports:
+    # At the moment the WS endpoint is the same as the API Gateway
+    # HTTP endpoint, this might change in the future
+    - name: wamp-ws
+      port: 80
+      targetPort: http
+    # At the moment the WSS endpoint is the same as the API Gateway
+    # HTTPS endpoint, this might change in the future
+    - name: wamp-wss
+      port: 443
+      targetPort: https
+    - name: wamp-tcp
+      port: 9072
+      targetPort: wamp-tcp
+    - name: wamp-tls
+      port: 9073
+      targetPort: wamp-tls

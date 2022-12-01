@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: bondy-sc
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: io2
+  iopsPerGB: "100"
+  allowautoiopspergbincrease: "true"
+  fsType: ext4
+  encrypted: "true"
+  ## pv_kms_key_id
+  kmsKeyId: arn:aws:kms:us-east-1:108876670047:key/51873ec1-b047-4c41-b749-d10ee8215697

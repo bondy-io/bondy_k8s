@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-wamp
+  annotations:
+    # overriding tcp protocol!!!
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "ssl"
+    # https://console.aws.amazon.com/vpc/home?region=us-east-1#Addresses:
+    # Allocation ID: eipalloc-071f51aff6ca142ba  ->  18.208.117.108
+    # Allocation ID: eipalloc-08130511ffb26f445 -> 52.201.201.124
+    service.beta.kubernetes.io/aws-load-balancer-eip-allocations: eipalloc-071f51aff6ca142ba,eipalloc-08130511ffb26f445
+    # https://console.aws.amazon.com/acm/home?region=us-east-1#/certificates/list
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:108876670047:certificate/97d59beb-1058-474b-9625-8c5c429634f4
+    # https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html#describe-ssl-policies
+    service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
+    # Only run SSL on the port named "https,wamp-tls" below.
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https,wamp-tls,bridge-tls"
+    # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/service/annotations/#alpn-policy
+    service.beta.kubernetes.io/aws-load-balancer-alpn-policy: None
+spec:
+  type: LoadBalancer
+  selector:
+    app: bondy
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
+    - name: wamp-tls
+      port: 9073
+      targetPort: wamp-tls
+    - name: bridge-tls
+      port: 9075
+      targetPort: bridge-tls
