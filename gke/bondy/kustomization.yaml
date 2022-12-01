@@ -3,7 +3,7 @@ kind: Kustomization
 
 
 bases:
-  - ../../../../bases/wamp/bondy
+  - ../../bases/bondy
 
 
 patchesStrategicMerge:
