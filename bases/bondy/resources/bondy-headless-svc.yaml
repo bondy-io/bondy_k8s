@@ -6,7 +6,7 @@
 # As usual, bondy.default.svc.cluster.local will be created, but unlike with a
 # standard service, doing a DNS lookup on this hostname provides all the
 # addresses in the StatefulSet.
-# In addition, entries are created for bondy-{N}⁠.bondy⁠.default⁠.svc⁠.cluster​.
+# In addition, entries are created for bondy-{N}.bondy.default.svc.cluster.
 # local for  N in 0..NumberOfReplicas.
 # Each of these resolves to the specific IP address of the replica index in the
 # StatefulSet (Source: Kubernetes Up and Running by Hightower, Kelsey; Burns,

@@ -13,6 +13,6 @@ spec:
     - name: admin-http
       port: 8081
       targetPort: admin-http
-    - name: admin-https
-      port: 8083
-      targetPort: admin-https
+    # - name: admin-https
+    #   port: 8083
+    #   targetPort: admin-https

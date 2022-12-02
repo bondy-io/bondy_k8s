@@ -29,8 +29,6 @@ spec:
         prometheus.io/port: "18081"
     spec:
       terminationGracePeriodSeconds: 300
-      nodeSelector:
-        node-role: "bondy-worker"
       # initContainers: null
       containers:
       - name: bondy

@@ -2,27 +2,10 @@
 # Exposes the Service externally using a cloud provider's load balancer.
 # NodePort and ClusterIP Services, to which the external load balancer routes,
 # are automatically created.
-#Documentation: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/
-# https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/service/annotations/
-# https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html
 apiVersion: v1
 kind: Service
 metadata:
   name: external-wamp
-  annotations:
-    # service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
-    # service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
-    # service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    # service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: preserve_client_ip.enabled=true,deregistration_delay.timeout_seconds=360
-    # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
-    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "3"
-    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "3"
-    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "10"
-    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "10"
-    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "http"
-    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "18081"
-    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/ping"
 spec:
   type: LoadBalancer
   selector:

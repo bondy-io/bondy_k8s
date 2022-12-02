@@ -15,7 +15,6 @@ resources:
 - resources/bondy-internal-wamp-svc.yaml
 - resources/bondy-load-balancer.yaml
 - resources/bondy-statefulset.yaml
-- resources/bondy-storage-class.yaml
 
 
 generatorOptions:

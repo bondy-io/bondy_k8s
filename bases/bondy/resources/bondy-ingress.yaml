@@ -1,12 +1,26 @@
-#Documentation: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/
-# https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/ingress/annotations/
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-bondy
   annotations:
-    # alb.ingress.kubernetes.io/scheme: internet-facing
-    # alb.ingress.kubernetes.io/target-type: ip
-    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
 spec:
-  # ingressClassName: aws-class
+  spec:
+  type: LoadBalancer
+  selector:
+    app: bondy
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    # - name: https
+    #   port: 443
+    #   targetPort: https
+    - name: wamp-tcp
+      port: 9072
+      targetPort: wamp-tcp
+    # - name: wamp-tls
+    #   port: 9073
+    #   targetPort: wamp-tls
+    # - name: bridge-tls
+    #   port: 9075
+    #   targetPort: bridge-tls
