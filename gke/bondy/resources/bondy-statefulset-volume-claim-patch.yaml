@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bondy
+spec:
+  selector:
+    matchLabels:
+      app: bondy
+  serviceName: bondy
+  volumeClaimTemplates:
+  - metadata:
+      name: bondy-data-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 25Gi
+      storageClassName: standard-rwo

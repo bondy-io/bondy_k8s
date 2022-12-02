@@ -7,9 +7,11 @@ bases:
 
 
 patchesStrategicMerge:
-- resources/bondy-statefulset-patch.yaml
+- resources/bondy-statefulset-replicas-patch.yaml
+- resources/bondy-statefulset-resources-patch.yaml
+- resources/bondy-statefulset-volume-claim-patch.yaml
+- resources/bondy-statefulset-volumes-patch.yaml
 - resources/bondy-load-balancer-patch.yaml
-- resources/bondy-storage-class-patch.yaml
 
 
 configMapGenerator:
@@ -18,7 +20,6 @@ configMapGenerator:
   files:
   - config/bondy.conf.template
   - config/security_config.json.template
-  - config/broker_bridge_config.json.template
 
 generatorOptions:
   disableNameSuffixHash: true

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bondy
+spec:
+  selector:
+    matchLabels:
+      app: bondy
+  serviceName: bondy
+  template:
+    metadata:
+      labels:
+        app: bondy
+    spec:
+      containers:
+      - name: bondy
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: "2"
+          limits:
+            memory: 4Gi
+            cpu: "4"

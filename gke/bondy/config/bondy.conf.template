@@ -754,7 +754,6 @@ wamp.websocket.deflate.client_max_window_bits = 11
 ## BROKER BRIDGE
 ## =============================================================================
 
-broker_bridge.config_file = ${BONDY_ETC_DIR}/broker_bridge_config.json
 
 ##
 ##
@@ -763,29 +762,6 @@ broker_bridge.config_file = ${BONDY_ETC_DIR}/broker_bridge_config.json
 ## Acceptable values:
 ##   - on or off
 broker_bridge.kafka.enabled = off
-
-
-## Notification - AWS
-broker_bridge.aws.region = ${AWS_REGION}
-broker_bridge.aws.access_key_id = ${AWS_ACCESS_KEY_ID}
-broker_bridge.aws.secret_access_key = ${AWS_SECRET_ACCESS_KEY}
-
-## Notification - Amazon SNS
-broker_bridge.aws.sns.enabled = on
-broker_bridge.aws.sns_host = ${AWS_SNS_HOST}
-## Notification - Amazon SES
-# broker_bridge.aws.ses.enabled = off
-
-## TODO: I can't have both!!!
-## Notification - Mailgun
-broker_bridge.mailgun.enabled = off
-
-## Notification - Sendgrid
-broker_bridge.sendgrid.enabled = on
-broker_bridge.sendgrid.adapter = sendgrid
-broker_bridge.sendgrid.apiurl = https://api.sendgrid.com/v3
-broker_bridge.sendgrid.apikey = ${SENDGRID_APIKEY}
-broker_bridge.sendgrid.sender = ${SENDGRID_SENDER}
 
 
 

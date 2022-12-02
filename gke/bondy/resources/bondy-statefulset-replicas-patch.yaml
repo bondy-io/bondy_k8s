@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bondy
+spec:
+  selector:
+    matchLabels:
+      app: bondy
+  serviceName: bondy
+  replicas: 3

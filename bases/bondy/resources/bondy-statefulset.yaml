@@ -29,9 +29,9 @@ spec:
         prometheus.io/port: "18081"
     spec:
       terminationGracePeriodSeconds: 300
-      # initContainers: null
       nodeSelector:
         node-role: "bondy-worker"
+      # initContainers: null
       containers:
       - name: bondy
         image: bondy-image
@@ -47,20 +47,12 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-          - name: RELX_REPLACE_OS_VARS
-            value: 'true'
           - name: BONDY_PEER_SERVICE_NAME
             value: 'bondy.$(BONDY_K8S_NAMESPACE).svc.$(BONDY_K8S_CLUSTER_NAME).local'
           - name: BONDY_ERL_NODENAME
             value: 'bondy@$(BONDY_K8S_POD_NAME).bondy.$(BONDY_K8S_NAMESPACE).svc.$(BONDY_K8S_CLUSTER_NAME).local'
           - name: BONDY_ERL_DISTRIBUTED_COOKIE
             value: "bondy"
-          - name: BONDY_ERL_SCHEDULERS
-            valueFrom:
-              resourceFieldRef:
-                containerName: bondy
-                resource: limits.cpu
-                divisor: 1
           - name: BONDY_ERL_CRASH_DUMP
             value: "/bondy/log"
           - name: BONDY_LOG_LEVEL
@@ -106,33 +98,37 @@ spec:
             mountPath: /bondy/tmp
           - name: bondy-log-volume
             mountPath: /bondy/log
+        # 10 * 30 = 300 secs = 5 mins
+        startupProbe:
+          httpGet:
+            path: /ping
+            port: 18081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 30
         livenessProbe:
           httpGet:
             path: /ping
             port: 18081
             scheme: HTTP
-          initialDelaySeconds: 20
-          periodSeconds: 5
-          timeoutSeconds: 2
-          failureThreshold: 5
-        # startupProbe:
-        #   httpGet:
-        #     path: /ready
-        #     port: 18081
-        #     scheme: HTTP
-        #   initialDelaySeconds: 90
-        #   periodSeconds: 10
-        #   timeoutSeconds: 2
-        #   failureThreshold: 15
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 1
         readinessProbe:
           httpGet:
             path: /ready
             port: 18081
             scheme: HTTP
-          initialDelaySeconds: 20
+          initialDelaySeconds: 5
           periodSeconds: 10
-          timeoutSeconds: 2
-          failureThreshold: 15
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
